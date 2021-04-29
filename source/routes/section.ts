@@ -1,11 +1,11 @@
 import express from 'express';
-import category from '../controllers/categories';
+import category from '../controllers/section';
 
 const router = express.Router();
 
-router.post('/sectionlist', category.getAllCategories);
-router.post('/addsection', category.addCategory);
-router.post('/updatesection', category.updateCategory);
-router.post('/deletesection', category.deleteCategory);
+router.post('/sectionlist', category.getAllSections);
+router.post('/addsection', category.addSection);
+router.post('/updatesection', category.updateSection);
+router.post('/deletesection', category.deleteSection);
 
 export = router;
