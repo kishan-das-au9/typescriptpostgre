@@ -6,6 +6,35 @@ import moment from 'moment'
 
 import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
+import { getUploadSignedUrl } from '../lib/fileupload'
+
+const awsSignInUrl = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    // Using joi schema to validate req body
+    const joiSchema = Joi.object().keys({
+      filename: Joi.string().required(),
+    });
+
+    const { error: joiError, value: dataObj } = joiSchema.validate(req.body);
+
+    if (joiError) {
+      return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
+    }
+
+    // Adding cby manually for now.
+    // Todo: Later get the data from sessions
+    const userid = 1
+
+    const { url, fileUuidName } = getUploadSignedUrl(dataObj.filename);
+
+    res.json({ data: { url, fileuuidname: fileUuidName }, success: true, message: 'Signed url' });
+
+  } catch (error) {
+    return res.json({ success: false, message: error });
+  }
+
+};
 
 const addBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -128,4 +157,4 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 
-export default { addBook, updateBook, deleteBook };
+export default { awsSignInUrl, addBook, updateBook, deleteBook };
