@@ -1,6 +1,8 @@
 import express from 'express';
-
 const router = express.Router();
+
+import { checkClientAuth } from "../lib/clientauth";
+router.use(checkClientAuth)
 
 // Add all protected routes
 router.use('/', require('../routes/booksave'));

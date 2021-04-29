@@ -1,4 +1,4 @@
-import _ from "lodash";
+const _ = require('lodash');
 
 function formatJoiValErrors(errors: any): any {
   errors = errors.details;
