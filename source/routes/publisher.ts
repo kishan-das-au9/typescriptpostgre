@@ -1,11 +1,11 @@
 import express from 'express';
-import category from '../controllers/publisher';
+import publisher from '../controllers/publisher';
 
 const router = express.Router();
 
-router.post('/publusherlist', category.getAllPublisher);
-router.post('/addpublisher', category.addPublisher);
-router.post('/updatepublisher', category.updatePublisher);
-router.post('/deletepublisher', category.deletePublsher);
+router.post('/publusherlist', publisher.getAllPublisher);
+router.post('/addpublisher', publisher.addPublisher);
+router.post('/updatepublisher', publisher.updatePublisher);
+router.post('/deletepublisher', publisher.deletePublsher);
 
 export = router;

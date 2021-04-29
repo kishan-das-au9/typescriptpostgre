@@ -1,10 +1,10 @@
 import express from 'express';
-import category from '../controllers/collection';
+import collection from '../controllers/collection';
 
 const router = express.Router();
 
-router.post('/collectionlist', category.getAllCollections);
-router.post('/addcollection', category.addCollection);
-router.post('/deletecollection', category.deleteCollection);
+router.post('/collectionlist', collection.getAllCollections);
+router.post('/addcollection', collection.addCollection);
+router.post('/deletecollection', collection.deleteCollection);
 
 export = router;

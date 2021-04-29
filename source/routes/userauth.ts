@@ -1,8 +1,8 @@
 import express from 'express';
-import books from '../controllers/auth';
+import user from '../controllers/auth';
 
 const router = express.Router();
 
-router.post('/authcheck', books.authCheck);
+router.post('/authcheck', user.authCheck);
 
 export = router;
