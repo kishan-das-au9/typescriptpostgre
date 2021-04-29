@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import logging from './config/logging';
 import config from './config/config';
-import bookRoutes from './lib/libroute';
+import mainRouter from './lib/libroute';
 import { client } from './config/postgresql'
 
 client.connect()
@@ -42,7 +42,7 @@ router.use((req, res, next) => {
 });
 
 /** Routes go here */
-router.use('/', bookRoutes);
+router.use('/', mainRouter);
 
 /** Error handling */
 router.use((req, res, next) => {
