@@ -1,3 +1,5 @@
+// This file contains funtions to  add book, update book, delete book
+
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi'
 import moment from 'moment'
@@ -8,6 +10,7 @@ import { formatJoiValErrors } from '../lib/errorhandling'
 const addBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       awskey: Joi.string().required().min(2).max(50),
       coverpage: Joi.string().required().min(2).max(50),
@@ -31,6 +34,7 @@ const addBook = async (req: Request, res: Response, next: NextFunction) => {
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Insert query
     let query = `INSERT INTO books
     (awskey, title, cover_page, pages, edition, author_id, publisher_id, pub_year, section_id, description, ct, cby)
     VALUES (${dataObj.awskey}, '${dataObj.title}', '${dataObj.coverpage}', '${dataObj.pages}',
@@ -50,6 +54,7 @@ const addBook = async (req: Request, res: Response, next: NextFunction) => {
 const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       bookid: Joi.number().integer().required(),
       coverpage: Joi.string().required().min(2).max(50),
@@ -73,13 +78,15 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Update query
+
     let query = `UPDATE books
     SET title = ${dataObj.title}, cover_page = '${dataObj.coverpage}',
     pages = ${dataObj.pages}, edition = '${dataObj.edition}',
     author_id = ${dataObj.authorid}, publisher_id = '${dataObj.publisherid}',
     pub_year = ${dataObj.pubyear}, section_id = '${dataObj.sectionid}', description = '${dataObj.description}'
     mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
-    WHERE id = ${dataObj.bookid}`;
+    WHERE id = ${dataObj.bookid} LIMIT 1`;
 
     await client.query(query);
 
@@ -94,6 +101,7 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       bookid: Joi.number().integer().required(),
     });
@@ -104,8 +112,10 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
+    // Delete query
+
     let query = `DELETE FROM books
-    WHERE id = ${dataObj.bookid}`;
+    WHERE id = ${dataObj.bookid} LIMIT 1`;
 
     await client.query(query);
 

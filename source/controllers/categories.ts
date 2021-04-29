@@ -1,3 +1,5 @@
+// This file contains funtions to  getall categories, add category, update category, delete category
+
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi'
 import moment from 'moment'
@@ -27,6 +29,7 @@ const getAllCategories = async (req: Request, res: Response, next: NextFunction)
 const addCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       catname: Joi.string().required().min(2).max(100),
     });
@@ -41,6 +44,7 @@ const addCategory = async (req: Request, res: Response, next: NextFunction) => {
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Insert query
     let query = `INSERT INTO categories
     (catname, ct, cby)
     VALUES ('${dataObj.catname}','${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', ${userid})`;
@@ -58,6 +62,7 @@ const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       catid: Joi.number().integer().required(),
       catname: Joi.string().required().min(2).max(100).trim(),
@@ -73,9 +78,10 @@ const updateCategory = async (req: Request, res: Response, next: NextFunction) =
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Update query
     let query = `UPDATE categories
     SET catname = '${dataObj.catname}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
-    WHERE id = ${dataObj.catid}`;
+    WHERE id = ${dataObj.catid} LIMIT 1`;
 
     await client.query(query);
 
@@ -90,6 +96,7 @@ const updateCategory = async (req: Request, res: Response, next: NextFunction) =
 const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       catid: Joi.number().integer().required(),
     });
@@ -100,8 +107,9 @@ const deleteCategory = async (req: Request, res: Response, next: NextFunction) =
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
+    // Delete query
     let query = `DELETE FROM categories
-    WHERE id = ${dataObj.catid}`;
+    WHERE id = ${dataObj.catid} LIMIT 1`;
 
     await client.query(query);
 

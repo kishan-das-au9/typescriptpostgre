@@ -1,3 +1,5 @@
+// This file contains funtions to  getall collections, add collection, delete collection
+
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi'
 import moment from 'moment'
@@ -27,6 +29,7 @@ const getAllCollections = async (req: Request, res: Response, next: NextFunction
 const addCollection = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       bookid: Joi.number().integer().required(),
     });
@@ -41,6 +44,7 @@ const addCollection = async (req: Request, res: Response, next: NextFunction) =>
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Insert query
     let query = `INSERT INTO collections
     (user_id, book_id, ct)
     VALUES (${userid}, '${dataObj.bookid}', '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}')`;
@@ -58,6 +62,7 @@ const addCollection = async (req: Request, res: Response, next: NextFunction) =>
 const deleteCollection = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       colectionid: Joi.number().integer().required(),
     });
@@ -68,8 +73,9 @@ const deleteCollection = async (req: Request, res: Response, next: NextFunction)
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
+    // Delete query
     let query = `DELETE FROM collections
-    WHERE id = ${dataObj.colectionid}`;
+    WHERE id = ${dataObj.colectionid} LIMIT 1`;
 
     await client.query(query);
 

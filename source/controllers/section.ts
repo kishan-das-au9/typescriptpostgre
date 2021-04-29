@@ -1,3 +1,5 @@
+// This file contains funtions to  getall sections, add section, update section, delete section
+
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi'
 import moment from 'moment'
@@ -27,6 +29,7 @@ const getAllSections = async (req: Request, res: Response, next: NextFunction) =
 const addSection = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       catid: Joi.number().integer().required(),
       sectionname: Joi.string().required().min(2).max(100),
@@ -42,6 +45,7 @@ const addSection = async (req: Request, res: Response, next: NextFunction) => {
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Insert query
     let query = `INSERT INTO sections
     (category_id, section_name, ct, cby)
     VALUES (${dataObj.catid}, '${dataObj.catname}', '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', ${userid})`;
@@ -59,6 +63,7 @@ const addSection = async (req: Request, res: Response, next: NextFunction) => {
 const updateSection = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       sectionid: Joi.number().integer().required(),
       catid: Joi.number().integer().required(),
@@ -75,9 +80,10 @@ const updateSection = async (req: Request, res: Response, next: NextFunction) =>
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Update query
     let query = `UPDATE sections
     SET category_id = ${dataObj.catid}, section_name = '${dataObj.sectionname}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
-    WHERE id = ${dataObj.sectionid}`;
+    WHERE id = ${dataObj.sectionid} LIMIT 1`;
 
     await client.query(query);
 
@@ -92,6 +98,7 @@ const updateSection = async (req: Request, res: Response, next: NextFunction) =>
 const deleteSection = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       sectionid: Joi.number().integer().required(),
     });
@@ -102,8 +109,9 @@ const deleteSection = async (req: Request, res: Response, next: NextFunction) =>
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
+    // Delete query
     let query = `DELETE FROM sections
-    WHERE id = ${dataObj.sectionid}`;
+    WHERE id = ${dataObj.sectionid} LIMIT 1`;
 
     await client.query(query);
 

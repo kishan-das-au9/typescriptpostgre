@@ -83,7 +83,7 @@ const updateAuthor = async (req: Request, res: Response, next: NextFunction) => 
     // Update query
     let query = `UPDATE authors
     SET fname = ${dataObj.fname}, lname = '${dataObj.lname}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
-    WHERE id = ${dataObj.authorid}`;
+    WHERE id = ${dataObj.authorid} LIMIT 1`;
 
     await client.query(query);
 
@@ -111,7 +111,7 @@ const deleteAuthor = async (req: Request, res: Response, next: NextFunction) => 
 
     // Delete query
     let query = `DELETE FROM authors
-    WHERE id = ${dataObj.authorid}`;
+    WHERE id = ${dataObj.authorid} LIMIT 1`;
 
     await client.query(query);
 

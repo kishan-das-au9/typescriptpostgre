@@ -1,3 +1,5 @@
+// This file contains funtions to  getall publishers, add publisher, update publisher, delete publisher
+
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi'
 import moment from 'moment'
@@ -27,6 +29,7 @@ const getAllPublisher = async (req: Request, res: Response, next: NextFunction) 
 const addPublisher = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       pname: Joi.string().required().min(2).max(100),
       location: Joi.string().allow('').min(2).max(100),
@@ -42,6 +45,7 @@ const addPublisher = async (req: Request, res: Response, next: NextFunction) => 
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Insert query
     let query = `INSERT INTO publishers
     (pname, location, ct, cby)
     VALUES (${dataObj.pname}, '${dataObj.location}', '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', ${userid})`;
@@ -59,6 +63,7 @@ const addPublisher = async (req: Request, res: Response, next: NextFunction) => 
 const updatePublisher = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       pid: Joi.number().integer().required(),
       pname: Joi.string().required().min(2).max(100),
@@ -75,9 +80,10 @@ const updatePublisher = async (req: Request, res: Response, next: NextFunction) 
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Update query
     let query = `UPDATE publishers
     SET pname = ${dataObj.pname}, location = '${dataObj.location}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
-    WHERE id = ${dataObj.pid}`;
+    WHERE id = ${dataObj.pid} LIMIT 1`;
 
     await client.query(query);
 
@@ -92,6 +98,7 @@ const updatePublisher = async (req: Request, res: Response, next: NextFunction) 
 const deletePublsher = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       pid: Joi.number().integer().required(),
     });
@@ -102,8 +109,9 @@ const deletePublsher = async (req: Request, res: Response, next: NextFunction) =
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
+    // Delete query
     let query = `DELETE FROM publishers
-    WHERE id = ${dataObj.pid}`;
+    WHERE id = ${dataObj.pid} LIMIT 1`;
 
     await client.query(query);
 
