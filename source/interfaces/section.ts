@@ -1,4 +1,4 @@
-export default interface ICategory {
+export default interface ISection {
   id: number;
   category_id: number;
   section_name: string;
