@@ -6,5 +6,6 @@ const router = express.Router();
 router.use('/', require('../routes/categories'));
 router.use('/', require('../routes/section'));
 router.use('/', require('../routes/author'));
+router.use('/', require('../routes/publisher'));
 
 export = router;
