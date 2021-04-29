@@ -1,3 +1,5 @@
+// This file contains funtions to get authors, add author, update author, delete author
+
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi'
 import moment from 'moment'
@@ -27,6 +29,7 @@ const getAllAuthor = async (req: Request, res: Response, next: NextFunction) => 
 const addAuthor = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       fname: Joi.string().required().min(2).max(50),
       lname: Joi.string().allow('').min(2).max(50),
@@ -42,6 +45,7 @@ const addAuthor = async (req: Request, res: Response, next: NextFunction) => {
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Insert query
     let query = `INSERT INTO authors
     (fname, lname, ct, cby)
     VALUES (${dataObj.fname}, '${dataObj.lname}', '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', ${userid})`;
@@ -59,6 +63,7 @@ const addAuthor = async (req: Request, res: Response, next: NextFunction) => {
 const updateAuthor = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       authorid: Joi.number().integer().required(),
       fname: Joi.string().required().min(2).max(50),
@@ -75,6 +80,7 @@ const updateAuthor = async (req: Request, res: Response, next: NextFunction) => 
     // Todo: Later get the data from sessions
     const userid = 1
 
+    // Update query
     let query = `UPDATE authors
     SET fname = ${dataObj.fname}, lname = '${dataObj.lname}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
     WHERE id = ${dataObj.authorid}`;
@@ -92,6 +98,7 @@ const updateAuthor = async (req: Request, res: Response, next: NextFunction) => 
 const deleteAuthor = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       authorid: Joi.number().integer().required(),
     });
@@ -102,6 +109,7 @@ const deleteAuthor = async (req: Request, res: Response, next: NextFunction) => 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
+    // Delete query
     let query = `DELETE FROM authors
     WHERE id = ${dataObj.authorid}`;
 
