@@ -1,6 +1,7 @@
 // This file contains funtions to  add book, update book, delete book
 
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import { IUserRequest } from '../interfaces/request'
 import Joi from 'joi'
 import moment from 'moment'
 
@@ -9,7 +10,7 @@ import { formatJoiValErrors } from '../lib/errorhandling'
 import { getUploadSignedUrl } from '../lib/fileupload'
 
 // Use to get signinurl for book/cover uploaded to s3
-const awsSignInUrl = async (req: Request, res: Response, next: NextFunction) => {
+const awsSignInUrl = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -23,10 +24,6 @@ const awsSignInUrl = async (req: Request, res: Response, next: NextFunction) => 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
-
     const { url, fileUuidName } = getUploadSignedUrl(dataObj.filename);
 
     res.json({ data: { url, fileuuidname: fileUuidName }, success: true, message: 'Signed url' });
@@ -37,7 +34,7 @@ const awsSignInUrl = async (req: Request, res: Response, next: NextFunction) => 
 
 };
 
-const addBook = async (req: Request, res: Response, next: NextFunction) => {
+const addBook = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -60,9 +57,7 @@ const addBook = async (req: Request, res: Response, next: NextFunction) => {
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
+    const { userid } = req.session
 
     // Insert query
     let query = `INSERT INTO books
@@ -81,7 +76,7 @@ const addBook = async (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-const updateBook = async (req: Request, res: Response, next: NextFunction) => {
+const updateBook = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -104,9 +99,7 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
+    const { userid } = req.session
 
     // Update query
 
@@ -128,7 +121,7 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+const deleteBook = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body

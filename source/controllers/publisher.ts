@@ -1,13 +1,14 @@
 // This file contains funtions to  getall publishers, add publisher, update publisher, delete publisher
 
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import { IUserRequest } from '../interfaces/request'
 import Joi from 'joi'
 import moment from 'moment'
 
 import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
 
-const getAllPublisher = async (req: Request, res: Response, next: NextFunction) => {
+const getAllPublisher = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
     let publisherArr = []
     let query = `SELECT 
@@ -26,7 +27,7 @@ const getAllPublisher = async (req: Request, res: Response, next: NextFunction) 
 
 };
 
-const addPublisher = async (req: Request, res: Response, next: NextFunction) => {
+const addPublisher = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -41,9 +42,7 @@ const addPublisher = async (req: Request, res: Response, next: NextFunction) => 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
+    const { userid } = req.session
 
     // Insert query
     let query = `INSERT INTO publishers
@@ -60,7 +59,7 @@ const addPublisher = async (req: Request, res: Response, next: NextFunction) => 
 
 };
 
-const updatePublisher = async (req: Request, res: Response, next: NextFunction) => {
+const updatePublisher = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -76,10 +75,8 @@ const updatePublisher = async (req: Request, res: Response, next: NextFunction) 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
-
+    const { userid } = req.session
+    
     // Update query
     let query = `UPDATE publishers
     SET pname = ${dataObj.pname}, location = '${dataObj.location}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
@@ -95,7 +92,7 @@ const updatePublisher = async (req: Request, res: Response, next: NextFunction) 
 
 };
 
-const deletePublsher = async (req: Request, res: Response, next: NextFunction) => {
+const deletePublsher = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body

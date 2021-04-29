@@ -1,13 +1,14 @@
 // This file contains funtions to  getall collections, add collection, delete collection
 
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import { IUserRequest } from '../interfaces/request'
 import Joi from 'joi'
 import moment from 'moment'
 
 import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
 
-const getAllCollections = async (req: Request, res: Response, next: NextFunction) => {
+const getAllCollections = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
     let collectionArr = []
     let query = `SELECT 
@@ -26,7 +27,7 @@ const getAllCollections = async (req: Request, res: Response, next: NextFunction
 
 };
 
-const addCollection = async (req: Request, res: Response, next: NextFunction) => {
+const addCollection = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
      // Using joi schema to validate req body
@@ -40,10 +41,8 @@ const addCollection = async (req: Request, res: Response, next: NextFunction) =>
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
-
+    const { userid } = req.session
+    
     // Insert query
     let query = `INSERT INTO collections
     (user_id, book_id, ct)
@@ -59,7 +58,7 @@ const addCollection = async (req: Request, res: Response, next: NextFunction) =>
 
 };
 
-const deleteCollection = async (req: Request, res: Response, next: NextFunction) => {
+const deleteCollection = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
      // Using joi schema to validate req body

@@ -1,13 +1,14 @@
 // This file contains funtions to  getall categories, add category, update category, delete category
 
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import { IUserRequest } from '../interfaces/request'
 import Joi from 'joi'
 import moment from 'moment'
 
 import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
 
-const getAllCategories = async (req: Request, res: Response, next: NextFunction) => {
+const getAllCategories = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
     let bookArr = []
     let query = `SELECT 
@@ -26,7 +27,7 @@ const getAllCategories = async (req: Request, res: Response, next: NextFunction)
 
 };
 
-const addCategory = async (req: Request, res: Response, next: NextFunction) => {
+const addCategory = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -40,9 +41,7 @@ const addCategory = async (req: Request, res: Response, next: NextFunction) => {
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
+    const { userid } = req.session
 
     // Insert query
     let query = `INSERT INTO categories
@@ -59,7 +58,7 @@ const addCategory = async (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
+const updateCategory = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -74,10 +73,8 @@ const updateCategory = async (req: Request, res: Response, next: NextFunction) =
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
-
+    const { userid } = req.session
+    
     // Update query
     let query = `UPDATE categories
     SET catname = '${dataObj.catname}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
@@ -93,7 +90,7 @@ const updateCategory = async (req: Request, res: Response, next: NextFunction) =
 
 };
 
-const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
+const deleteCategory = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body

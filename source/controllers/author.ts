@@ -1,13 +1,14 @@
 // This file contains funtions to get authors, add author, update author, delete author
 
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import { IUserRequest } from '../interfaces/request'
 import Joi from 'joi'
 import moment from 'moment'
 
 import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
 
-const getAllAuthor = async (req: Request, res: Response, next: NextFunction) => {
+const getAllAuthor = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
     let bookArr = []
     let query = `SELECT 
@@ -26,7 +27,7 @@ const getAllAuthor = async (req: Request, res: Response, next: NextFunction) => 
 
 };
 
-const addAuthor = async (req: Request, res: Response, next: NextFunction) => {
+const addAuthor = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -41,9 +42,7 @@ const addAuthor = async (req: Request, res: Response, next: NextFunction) => {
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
+    const { userid } = req.session
 
     // Insert query
     let query = `INSERT INTO authors
@@ -60,7 +59,7 @@ const addAuthor = async (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-const updateAuthor = async (req: Request, res: Response, next: NextFunction) => {
+const updateAuthor = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -76,9 +75,7 @@ const updateAuthor = async (req: Request, res: Response, next: NextFunction) => 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
+    const { userid } = req.session
 
     // Update query
     let query = `UPDATE authors
@@ -95,7 +92,7 @@ const updateAuthor = async (req: Request, res: Response, next: NextFunction) => 
 
 };
 
-const deleteAuthor = async (req: Request, res: Response, next: NextFunction) => {
+const deleteAuthor = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body

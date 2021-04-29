@@ -1,13 +1,14 @@
 // This file contains funtions to  getall sections, add section, update section, delete section
 
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import { IUserRequest } from '../interfaces/request'
 import Joi from 'joi'
 import moment from 'moment'
 
 import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
 
-const getAllSections = async (req: Request, res: Response, next: NextFunction) => {
+const getAllSections = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
     let bookArr = []
     let query = `SELECT 
@@ -26,7 +27,7 @@ const getAllSections = async (req: Request, res: Response, next: NextFunction) =
 
 };
 
-const addSection = async (req: Request, res: Response, next: NextFunction) => {
+const addSection = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -41,9 +42,7 @@ const addSection = async (req: Request, res: Response, next: NextFunction) => {
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
+    const { userid } = req.session
 
     // Insert query
     let query = `INSERT INTO sections
@@ -60,7 +59,7 @@ const addSection = async (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-const updateSection = async (req: Request, res: Response, next: NextFunction) => {
+const updateSection = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
@@ -76,10 +75,8 @@ const updateSection = async (req: Request, res: Response, next: NextFunction) =>
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Adding cby manually for now.
-    // Todo: Later get the data from sessions
-    const userid = 1
-
+    const { userid } = req.session
+    
     // Update query
     let query = `UPDATE sections
     SET category_id = ${dataObj.catid}, section_name = '${dataObj.sectionname}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
@@ -95,7 +92,7 @@ const updateSection = async (req: Request, res: Response, next: NextFunction) =>
 
 };
 
-const deleteSection = async (req: Request, res: Response, next: NextFunction) => {
+const deleteSection = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
     // Using joi schema to validate req body
