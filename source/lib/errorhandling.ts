@@ -1,5 +1,7 @@
 const _ = require('lodash');
 
+// This function is used to format errors created while validating req.body
+
 function formatJoiValErrors(errors: any): any {
   errors = errors.details;
   errors.forEach(e => {
