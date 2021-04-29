@@ -3,6 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 // access by all
+router.use('/', require('../routes/userauth'));
 router.use('/', require('../routes/book'));
 
 // Add all protected routes
