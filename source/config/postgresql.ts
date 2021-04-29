@@ -1,5 +1,6 @@
 import config from './config';
 
+// Database Connection
 const { Client } = require('pg');
 const connectionString = `postgres://${config.postgresql.user}:${config.postgresql.pass}@${config.postgresql.host}:5432/${config.postgresql.database}`
 

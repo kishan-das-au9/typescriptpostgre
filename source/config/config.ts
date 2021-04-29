@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Database config setup
 const RDS_HOST = process.env.RDS_HOST || 'localhost';
 const RDS_DATABASE = process.env.RDS_DATABASE || 'library';
 const RDS_USER = process.env.RDS_USERNAME || 'postgres';
@@ -13,7 +14,6 @@ const POSTGRESQL = {
     user: RDS_USER,
     pass: RDS_PASS
 };
-
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
 const SERVER_PORT = process.env.SERVER_PORT || 1337;
