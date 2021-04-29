@@ -28,6 +28,7 @@ function getUploadSignedUrl(filename: string) {
     throw Error(`File Extension ${fileExtension} not allowed`);
   }
 
+  // Storing it in S3 and getting signed url from aws
   const fileUuidName = `${uuid()}.${fileExtension}`
   const signedURL = S3.getSignedUrl('putObject', {
     Bucket: awsBucket,

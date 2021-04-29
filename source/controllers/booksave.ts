@@ -8,6 +8,7 @@ import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
 import { getUploadSignedUrl } from '../lib/fileupload'
 
+// Use to get signinurl for book/cover uploaded to s3
 const awsSignInUrl = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
