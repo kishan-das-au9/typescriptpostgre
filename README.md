@@ -17,6 +17,7 @@ Using redis store to store session values. We are storing userid, email and isad
 #### Book Upload
 1. Since this is a virtual library the user can also view the book. So added api for uploading files to S3 in AWS.
 2. Action can only be performed by admin
+3. While deletion along with deleting records from our database we will delete it from S3 as well, have written function for the same
 
 #### Collection
 1. Each user can have there own collections of books
