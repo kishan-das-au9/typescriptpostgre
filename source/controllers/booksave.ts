@@ -7,7 +7,7 @@ import moment from 'moment'
 
 import { client } from '../config/postgresql'
 import { formatJoiValErrors } from '../lib/errorhandling'
-import { getUploadSignedUrl } from '../lib/fileupload'
+import { getUploadSignedUrl, deleteFileAws } from '../lib/fileupload'
 
 // Use to get signinurl for book/cover uploaded to s3
 const awsSignInUrl = async (req: IUserRequest, res: Response, next: NextFunction) => {
@@ -151,8 +151,15 @@ const deleteBook = async (req: IUserRequest, res: Response, next: NextFunction) 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    // Delete query
 
+    const query1 = `SELECT awskey, cover_page FROM books LIMIT 1`;
+    const bookObj = await client.query(query1)
+    // Delete file from aws S3
+    await deleteFileAws(bookObj.awskey);
+    // delete page cover from aws S3
+    await deleteFileAws(bookObj.cover_page);
+
+    // Delete query
     let query = `DELETE FROM books
     WHERE id = ${dataObj.bookid} LIMIT 1`;
 

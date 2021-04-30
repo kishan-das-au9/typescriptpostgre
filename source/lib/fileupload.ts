@@ -38,6 +38,42 @@ function getUploadSignedUrl(filename: string) {
   return { url: signedURL, fileUuidName };
 }
 
+async function deleteFileAws(awskey: string) {
+  try {
+    await S3.deleteObject({
+      Bucket: awsBucket,
+      Key: `${awskey}`,
+    }).promise();
+
+    // Check if the file exits, after delete operation, 
+    //  If exists, then throw an error.
+    if (await isFileExists(awskey) == true) {
+      throw Error('Error in Deleting file form AWS');
+    }
+    return;
+  } catch (error) {
+    throw Error(error.message || error);
+  }
+}
+
+async function isFileExists(awskey: string) {
+  try {
+    await S3.headObject({
+      Bucket: awsBucket,
+      Key: `${awskey}`,
+    }).promise();
+    return true;
+  } catch (err) {
+    if (err.code === 'NotFound') {
+      return false
+    } else {
+      throw Error(err.message || err);
+    }
+  }
+}
+
+
+
 function getFileExtension(filename) {
   if (!filename.includes('.')) {
     return '';
@@ -46,4 +82,4 @@ function getFileExtension(filename) {
 }
 
 
-export { getUploadSignedUrl }
+export { getUploadSignedUrl, deleteFileAws }
