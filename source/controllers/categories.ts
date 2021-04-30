@@ -11,9 +11,7 @@ import { formatJoiValErrors } from '../lib/errorhandling'
 const getAllCategories = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
     let bookArr = []
-    let query = `SELECT 
-    *
-    FROM categories`;
+    let query = `SELECT id, catname FROM categories`;
 
     const queryRes = await client.query(query);
     // assign values in qeuryRes to bookArr here...

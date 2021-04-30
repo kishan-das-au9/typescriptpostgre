@@ -10,10 +10,23 @@ import { formatJoiValErrors } from '../lib/errorhandling'
 
 const getAllCollections = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
+    // Get all collections of a specific user
+    const { userid } = req.session
+
     let collectionArr = []
     let query = `SELECT 
-    *
-    FROM collections`;
+    collections.id, books.awskey, books.title, books.cover_page, books.pages, books.edition
+    books.pub_year, books.description, books.author_id,
+    authors.fname, authors.lname, books.publisher_id, publishers.pname,
+    books.section_id, sections.section_name, sections.category_id, categories.catname,
+    FROM collections
+    JOIN books on collections.book_id = books.id
+    FROM books
+    LEFT JOIN authors ON books.author_id = authors.id
+    LEFT JOIN publishers ON books.publisher_id = publishers.id
+    LEFT JOIN sections ON books.section_id = sections.id
+    LEFT JOIN categories ON sections.category_id = categories.id
+    WHERE user_id = ${userid}`;
 
     const queryRes = await client.query(query);
     // assign values in qeuryRes to collectionArr here...

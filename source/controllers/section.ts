@@ -11,9 +11,7 @@ import { formatJoiValErrors } from '../lib/errorhandling'
 const getAllSections = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
     let bookArr = []
-    let query = `SELECT 
-    *
-    FROM sections`;
+    let query = `SELECT id, category_id, section_name FROM sections`;
 
     const queryRes = await client.query(query);
     // assign values in qeuryRes to bookArr here...
