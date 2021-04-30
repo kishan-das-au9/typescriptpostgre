@@ -13,6 +13,12 @@ import { getUploadSignedUrl } from '../lib/fileupload'
 const awsSignInUrl = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
+    const { isadmin } = req.session
+    if (isadmin == 0) {
+      throw Error('Only admins can upload files')
+    }
+
+
     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       filename: Joi.string().required(),
@@ -37,6 +43,11 @@ const awsSignInUrl = async (req: IUserRequest, res: Response, next: NextFunction
 const addBook = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
+    const { userid, isadmin } = req.session
+    if (isadmin == 0) {
+      throw Error('Only admins can add authors')
+    }
+
     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       awskey: Joi.string().required().min(2).max(50),
@@ -57,8 +68,6 @@ const addBook = async (req: IUserRequest, res: Response, next: NextFunction) => 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    const { userid } = req.session
-
     // Insert query
     let query = `INSERT INTO books
     (awskey, title, cover_page, pages, edition, author_id, publisher_id, pub_year, section_id, description, ct, cby)
@@ -78,6 +87,11 @@ const addBook = async (req: IUserRequest, res: Response, next: NextFunction) => 
 
 const updateBook = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
+    
+    const { userid, isadmin } = req.session
+    if (isadmin == 0) {
+      throw Error('Only admins can update books')
+    }
 
     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
@@ -99,10 +113,7 @@ const updateBook = async (req: IUserRequest, res: Response, next: NextFunction) 
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    const { userid } = req.session
-
     // Update query
-
     let query = `UPDATE books
     SET title = ${dataObj.title}, cover_page = '${dataObj.coverpage}',
     pages = ${dataObj.pages}, edition = '${dataObj.edition}',
@@ -123,6 +134,11 @@ const updateBook = async (req: IUserRequest, res: Response, next: NextFunction) 
 
 const deleteBook = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
+
+    const { isadmin } = req.session
+    if (isadmin == 0) {
+      throw Error('Only admins can delete books')
+    }
 
     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({

@@ -28,6 +28,11 @@ const getAllPublisher = async (req: IUserRequest, res: Response, next: NextFunct
 const addPublisher = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
+    const { userid, isadmin } = req.session
+    if (isadmin == 0) {
+      throw Error('Only admins can add publishers')
+    }
+
     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       pname: Joi.string().required().min(2).max(100),
@@ -39,8 +44,6 @@ const addPublisher = async (req: IUserRequest, res: Response, next: NextFunction
     if (joiError) {
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
-
-    const { userid } = req.session
 
     // Insert query
     let query = `INSERT INTO publishers
@@ -60,6 +63,11 @@ const addPublisher = async (req: IUserRequest, res: Response, next: NextFunction
 const updatePublisher = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
 
+    const { userid, isadmin } = req.session
+    if (isadmin == 0) {
+      throw Error('Only admins can update publishers')
+    }
+
     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({
       pid: Joi.number().integer().required(),
@@ -73,8 +81,6 @@ const updatePublisher = async (req: IUserRequest, res: Response, next: NextFunct
       return res.json({ errors: formatJoiValErrors(joiError), success: false, msg: 'Check Parameters' });
     }
 
-    const { userid } = req.session
-    
     // Update query
     let query = `UPDATE publishers
     SET pname = ${dataObj.pname}, location = '${dataObj.location}', mt = '${moment.utc().format('YYYY-MM-DD HH:mm:ss')}', mby = ${userid}
@@ -92,6 +98,11 @@ const updatePublisher = async (req: IUserRequest, res: Response, next: NextFunct
 
 const deletePublsher = async (req: IUserRequest, res: Response, next: NextFunction) => {
   try {
+
+    const { isadmin } = req.session
+    if (isadmin == 0) {
+      throw Error('Only admins can delete publishers')
+    }
 
     // Using joi schema to validate req body
     const joiSchema = Joi.object().keys({

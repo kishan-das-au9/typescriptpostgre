@@ -22,15 +22,15 @@ async function checkClientAuth(req: any, res: any, next: any) {
     if (!email_verified) throw Error('Email Not verified')
 
     // Get id of user
-    const query = `SELECT id FROM users
+    const query = `SELECT id, isadmin FROM users
     WHERE email = ${email} LIMIT 1`
 
     const queryRes = await client.query(query);
 
-    const { id } = queryRes.rows
+    const { id, isadmin } = queryRes.rows
     
     // add it in req.session to be used by apis
-    req.session = { email, userid: id }
+    req.session = { email, userid: id, isadmin }
     next();
 
   } catch (err) {
